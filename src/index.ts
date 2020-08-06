@@ -1,8 +1,6 @@
 import { ApolloServer } from 'apollo-server';
-import resolvers from './resolvers';
-import typeDefs from './type-def';
 
-const server = new ApolloServer({ resolvers, typeDefs });
+const server = new ApolloServer({ });
 
 server.listen();
 
