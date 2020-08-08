@@ -1,6 +1,20 @@
 import { ApolloServer } from 'apollo-server';
+import RedditAPI from './datasources/reddit';
+import RedditResolver from './resolvers/reddit';
+import typeDefs from './datasources/schema';
 
-const server = new ApolloServer({ });
+const dataSources = () => ({
+  redditAPI: new RedditAPI(),
+});
+
+const context = () => {};
+
+const server = new ApolloServer({
+  context,
+  typeDefs,
+  dataSources,
+  resolvers: RedditResolver,
+});
 
 server.listen();
 
