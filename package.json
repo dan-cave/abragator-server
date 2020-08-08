@@ -16,6 +16,8 @@
     "apollo-server": "^2.16.1",
     "googleapis": "^58.0.0",
     "graphql": "^15.3.0",
+    "graphql-compose": "^7.19.1",
+    "graphql-compose-mongoose": "^7.4.1",
     "isomorphic-fetch": "^2.2.1",
     "mongoose": "^5.9.27",
     "rss-parser": "^3.9.0",
@@ -23,6 +25,7 @@
     "twitter": "^1.7.1"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.7.35",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
