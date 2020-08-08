@@ -2,7 +2,9 @@ import { gql } from 'apollo-server';
 
 const typeDefs = gql`
   type Query {
-    getSubreddit(subOrigin: String!): SubOrigin
+    getSubreddit(subreddit: String!, ranking: String,
+      time: String, limit: String,
+      count: String, after: String, before: String): SubOrigin
     getFrontpage: [Post]
     getUser(userId: String!): User
     getPost(postId: String!): Post
@@ -25,8 +27,8 @@ const typeDefs = gql`
     commentKarma: Int
     postKarma: Int
     isFriend: Boolean
-    posts(sortType: SortType, time: String, limit: Int, count: Int, after: String): [Post]
-    comments(sortType: SortType, time: String, limit: Int, count: Int, after: String): [Post]
+    posts(sortType: String, time: String, limit: Int, count: Int, after: String): [Post]
+    comments(sortType: String, time: String, limit: Int, count: Int, after: String): [Post]
     source: String
   }
 
@@ -36,7 +38,8 @@ const typeDefs = gql`
     isNSFW: Boolean
     description: String
     recommendedSubs: [SubOrigin]
-    posts(sortType: SortType, time: String, limit: Int, count: Int, after: String): [Post]
+    posts(sortType: String,  ranking: String, time: String, limit: String,
+      count: String, after: String, before: String): [Post]
     mods: [User]
     wiki: [WikiPage]
     bannerImage: String
@@ -70,7 +73,7 @@ const typeDefs = gql`
     archived: Boolean
     quarantine: Boolean
     duplicates(limit: Int, count: Int, after: String): [Post]
-    children(sortType: SortType, time: String, limit: Int, count: Int, after: String): [Post]
+    children(sortType: String, time: String, limit: Int, count: Int, after: String): [Post]
     silver: Int
     gold: Int
     platinum: Int
@@ -91,18 +94,6 @@ const typeDefs = gql`
     IMAGE
     VIDEO
     AUDIO
-  }
-
-  enum SortType {
-    HOT
-    TOP
-    RISING
-    CONTROVERSIAL
-    NEW
-    JOBS
-    ASK
-    SHOW
-    BEST
   }
 `;
 

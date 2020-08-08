@@ -1,5 +1,5 @@
 import RedditAPI from './datasources/reddit';
 
-export interface DataSource {
+export interface DataSources {
   redditAPI: RedditAPI
 }

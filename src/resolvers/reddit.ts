@@ -1,65 +1,65 @@
 import Snoowrap from 'snoowrap';
-import { DataSource } from '../types';
+import { DataSources } from '../types';
 
 export default {
   Query: {
-    getSubreddit: async (_: any, { subOrigin }: { subOrigin: string },
-      { dataSources }: { dataSources: DataSource }) => {
-      const subreddit = dataSources.redditAPI.getSubreddit(subOrigin);
-      return { subreddit };
+    getSubreddit: (_: any, { subreddit }: { subreddit: string },
+      { dataSources }: { dataSources: DataSources }) => {
+      const sub = dataSources.redditAPI.getSubreddit(subreddit);
+      return sub;
     },
-    getFrontpage: async (_: any, __: any, { dataSources }: { dataSources: DataSource }) => {
+    getFrontpage: async (_: any, __: any, { dataSources }: { dataSources: DataSources }) => {
       const frontpage = dataSources.redditAPI.getFrontpage();
       return frontpage;
     },
     getUser: async (_: any, { userId }: { userId: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const user = userId
         ? dataSources.redditAPI.getMe()
         : dataSources.redditAPI.getUser(userId);
       return { user };
     },
     getPost: async (_: any, { postId }: { postId: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const post = dataSources.redditAPI.getPost(postId);
       return { post };
     },
   },
   Mutation: {
     upvote: async (_: any, { post }: { post: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const upPost = dataSources.redditAPI.upvote({ post });
       return { upPost };
     },
     downvote: async (_: any, { post }: { post: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const downPost = dataSources.redditAPI.downvote({ post });
       return { downPost };
     },
     submitSelfPost: async (_: any,
       { subreddit, title, text }: { subreddit: string, title: string, text: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const selfPost = dataSources.redditAPI.createSelfPost({ subreddit, title, text });
       return { selfPost };
     },
     submitLinkPost: async (_: any,
       { subreddit, url }: { subreddit: string, url: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const linkPost = dataSources.redditAPI.createLinkPost({ subreddit, url });
       return { linkPost };
     },
     submitComment: async (_: any, { parent, text }: { parent: string, text: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const commentPost = dataSources.redditAPI.replyToPost({ parent, text });
       return { commentPost };
     },
     hidePost: async (_: any, { post }: { post: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const hiddenPost = dataSources.redditAPI.hide({ post });
       return { hiddenPost };
     },
     unhidePost: async (_: any, { post }: { post: string },
-      { dataSources }: { dataSources: DataSource }) => {
+      { dataSources }: { dataSources: DataSources }) => {
       const unhiddenPost = dataSources.redditAPI.unhide({ post });
       return { unhiddenPost };
     },
@@ -82,53 +82,31 @@ export default {
     source: () => 'REDDIT',
   },
   SubOrigin: {
-    id: ({ subreddit }: {subreddit: Snoowrap.Subreddit }) => subreddit.id,
-    name: ({ subreddit }: {subreddit: Snoowrap.Subreddit }) => subreddit.name,
-    isNSFW: ({ subreddit }: {subreddit: Snoowrap.Subreddit }) => subreddit.over18,
-    description: ({ subreddit }: {subreddit: Snoowrap.Subreddit }) => subreddit.description_html,
-    recommendedSubs: async ({ subreddit }: {subreddit: Snoowrap.Subreddit }) => (await
-    subreddit.getRecommendedSubreddits()) || [],
-    posts: async ({ subreddit }: {subreddit: Snoowrap.Subreddit }, {
-      sortType, limit, count, after,
-    }: {sortType: string, limit: number,
-      count: number, after: string}) => {
-      let posts;
-      switch (sortType) {
-        case 'CONTROVERSIAL':
-          posts = await subreddit.getControversial({
-            after, limit, count,
-          });
-          break;
-        case 'TOP':
-          posts = await subreddit.getTop({
-            after, limit, count,
-          });
-          break;
-        case 'NEW':
-          posts = await subreddit.getNew({ after, limit, count });
-          break;
-        case 'RISING':
-          posts = await subreddit.getRising({ after, limit, count });
-          break;
-        default:
-          posts = await subreddit.getHot({ after, limit, count });
-          break;
-      }
-      return posts;
-    },
-    // eslint-disable-next-line max-len
-    mods: async ({ subreddit }: { subreddit: Snoowrap.Subreddit },
+    id: (subreddit:Snoowrap.Subreddit) => subreddit.id,
+    name: (subreddit: Snoowrap.Subreddit) => subreddit.name,
+    isNSFW: (subreddit: Snoowrap.Subreddit) => subreddit.over18,
+    description: (subreddit: Snoowrap.Subreddit) => subreddit.description_html,
+    // recommendedSubs: async ({ subreddit }: {subreddit: Snoowrap.Subreddit }) => (await
+    // subreddit.getRecommendedSubreddits()) || [],
+    posts: async (subreddit: Snoowrap.Subreddit, {
+      ranking, time, limit, count, after, before,
+    }: {ranking: string, limit: number, time: string,
+      count: number, after: string, before: string },
+      { dataSources }: { dataSources: DataSources }) => dataSources
+      .redditAPI.getListing(subreddit, time, ranking, limit, count, after, before),
+    // // eslint-disable-next-line max-len
+    mods: async (subreddit: Snoowrap.Subreddit,
       { limit, count, after }:
       { limit: number, count:number, after: string }) => (await
     subreddit.getModerators({ limit, count, after })) || [],
-    wiki: async ({ subreddit }:
-    { subreddit: Snoowrap.Subreddit }) => (await subreddit.getWikiPages()) || [],
-    bannerImage: ({ subreddit }:
-    { subreddit: Snoowrap.Subreddit }) => subreddit.banner_img,
-    bannerBackgroundColor: ({ subreddit }:
-    { subreddit: Snoowrap.Subreddit }) => subreddit.banner_background_color,
-    primaryColor: ({ subreddit }: { subreddit: Snoowrap.Subreddit }) => subreddit.primary_color,
-    keyColor: ({ subreddit }: { subreddit: Snoowrap.Subreddit }) => subreddit.key_color,
+    // TODO: GET WIKI WORKING
+    // wiki: async (subreddit: Snoowrap.Subreddit, __: any,
+    //   { dataSources }: { dataSources: DataSources }) => dataSources
+    //   .redditAPI.getWiki(subreddit),
+    bannerImage: (subreddit: Snoowrap.Subreddit) => subreddit.banner_img,
+    bannerBackgroundColor: (subreddit: Snoowrap.Subreddit) => subreddit.banner_background_color,
+    primaryColor: (subreddit: Snoowrap.Subreddit) => subreddit.primary_color,
+    keyColor: (subreddit: Snoowrap.Subreddit) => subreddit.key_color,
   },
   Post: {
     id: (post: Snoowrap.Submission) => post.id,
